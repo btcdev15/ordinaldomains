@@ -1,0 +1,62 @@
+{
+  "name": "dice",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@apollo/client": "^3.5.8",
+    "@crossmint/client-sdk-react-ui": "^0.2.7-alpha.22",
+    "@ethersproject/providers": "^5.4.1",
+    "@ethersproject/units": "^5.4.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/frame-connector": "^6.0.9",
+    "@web3-react/injected-connector": "^6.0.7",
+    "@web3-react/walletconnect-connector": "^6.2.4",
+    "axios": "^0.22.0",
+    "chart.js": "^3.5.1",
+    "dayjs": "^1.10.7",
+    "ethers": "^5.4.1",
+    "gh-pages": "^5.0.0",
+    "graphql": "^16.3.0",
+    "ipfs-http-client": "^56.0.1",
+    "moralis": "^1.2.4",
+    "react": "^17.0.2",
+    "react-chartjs-2": "^3.0.5",
+    "react-dom": "^17.0.2",
+    "react-moralis": "^1.2.1",
+    "react-pro-sidebar": "^0.7.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "react-select-search": "^3.0.8",
+    "react-toastify": "^8.2.0",
+    "styled-components": "^5.3.0",
+    "web-vitals": "^1.0.1",
+    "web3": "^1.4.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
