@@ -12,7 +12,7 @@ import {
 import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from "@web3-react/frame-connector";
 import { Web3Provider } from "@ethersproject/providers";
 import { formatEther } from "@ethersproject/units";
-import { ToastContainer, toast } from 'react-toastify';
+import { Toaster, toast } from 'react-hot-toast';
 import { ethers } from 'ethers'
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -23,15 +23,11 @@ import { useMoralisCloudFunction } from "react-moralis";
 import { useEagerConnect, useInactiveListener } from "../hooks";
 import Web3 from 'web3'
 import Navbar from '../components/Navbar'
-import TopMarketCap from '../components/TopMarketCap'
-import VisitStaking from '../components/VisitStaking'
-import TopNFTs from '../components/TopNFTS'
-import RecentlyCreated from '../components/RecentlyCreated'
-import AnyOwnedByUser from "../components/AnyOwnedByUser";
-import Price from '../components/Price'
-import MintstarterServices from '../components/MintstarterServices'
+import ABI from '../ABI.json'
 import Footer from '../components/Footer'
 import '../App.css'
+import CoinbaseCommerceButton from 'react-coinbase-commerce';
+import 'react-coinbase-commerce/dist/coinbase-commerce-button.css';
 
 const connectorsByName = {
   Injected: injected,
@@ -57,232 +53,270 @@ function getErrorMessage(error) {
 
 
 function Homepage() {
-  const context = useWeb3React();
-  const {
-    connector,
-    library,
-    chainId,
-    account,
-    activate,
-    deactivate,
-    active,
-    error
-  } = context;
-
-  // handle logic to recognize the connector currently being activated
-  const [activatingConnector, setActivatingConnector] = React.useState();
-  React.useEffect(() => {
-    console.log('running')
-    if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
-    }
-  }, [activatingConnector, connector]);
-
-  // handle logic to eagerly connect to the injected ethereum provider, if it exists and has granted access already
-  const triedEager = useEagerConnect();
-
-  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
-  useInactiveListener(!triedEager || !!activatingConnector);
-
-  // set up block listener
-  const [blockNumber, setBlockNumber] = React.useState();
-  React.useEffect(() => {
-    console.log('running')
-    if (library) {
-      let stale = false;
-
-      console.log('fetching block number!!')
-      library
-        .getBlockNumber()
-        .then(blockNumber => {
-          if (!stale) {
-            setBlockNumber(blockNumber);
-          }
-        })
-        .catch(() => {
-          if (!stale) {
-            setBlockNumber(null);
-          }
-        });
-
-      const updateBlockNumber = blockNumber => {
-        setBlockNumber(blockNumber);
-      };
-      library.on("block", updateBlockNumber);
-
-      return () => {
-        library.removeListener("block", updateBlockNumber);
-        stale = true;
-        setBlockNumber(undefined);
-      };
-    }
-  }, [library, chainId]);
-
-  // fetch eth balance of the connected account
-  const [ethBalance, setEthBalance] = React.useState();
-  React.useEffect(() => {
-    if (library && account) {
-      let stale = false;
-
-      library
-        .getBalance(account)
-        .then(balance => {
-          if (!stale) {
-            setEthBalance(balance);
-          }
-        })
-        .catch(() => {
-          if (!stale) {
-            setEthBalance(null);
-          }
-        });
-
-      return () => {
-        stale = true;
-        setEthBalance(undefined);
-      };
-    }
-  }, [library, account, chainId]);
-
-
-  const [nftbalance, setNftbalance] = React.useState(0)
-  const [fvault, setFvault] = React.useState()
-
-  const [chosen, setChosen] = React.useState()
-  const [ethusdtlps, setEthusdtlps] = React.useState(0);
-  const [ethusdclps, setEthudctlps] = React.useState(0);
-  const [wbtcwethlps, setWbtcwethlps] = React.useState(0);
-  const [ethfakelps, setEthfakelps] = React.useState(0);
-  const [wbtcwethlp, setWbtcwethlp] = React.useState(0);
-  const [wbtcusdc, setWbtcusdc] = React.useState(0);
-  const [uniweth, setUniweth] = React.useState(0);
-  const [dydxweth, setDydxweth] = React.useState(0);
-  const [ftmweth, setFtmweth] = React.useState(0);
-  const [wbtcwethapy, setWbtcwethapy] = React.useState('')
-  const [ethusdcapy, setEthusdcapy] = React.useState('')
-  const [showbar, setShowbar] = React.useState(true)
-
-  const { fetch, data, isLoading } = useMoralisCloudFunction("getRecent", {},
-  { autoFetch: true }
-  );
-
-  const contributions = useMoralisCloudFunction("getContributed", {
-    "account":account
-  },
-  { autoFetch: false }
-  );
-
-  const [recent, setRecent] = React.useState([])
-  const [contributed, setContributed] = React.useState([])
-  const [loadinghelper, setLoadingHelper] = React.useState(false)
-
-  React.useEffect(async() => {
-    await fetch()
-    await contributions.fetch()
-    if(data && data.length){
-      let myArr = []
-      // data.reverse()
-      for(var i = data.length - 1; i >= data.length-3; i--){
-        let description = data[i].attributes.description;
-        if(description.length > 80){
-          description = description.substring(0, 80);
-        }
-        myArr.push(
-          <div className="col-12 col-md-4">
-            <div className="card">
-              <div className="card-body">
-                <img src={data[i].attributes.ipfs} width="100%" style={{maxWidth:'552px', borderRadius:'8px', padding:'10px', maxHeight:'374px'}} />
-                <hr />
-                <h5 style={{textAlign:'center'}}>{data[i].attributes.symbol}</h5>
-                <p style={{textAlign:'center', height:'80px'}}>{description}</p>
-                <a href={`/project/${data[i].attributes.address}`}>
-                  <button className="btn btn-dark" style={{width:'100%'}}>Visit</button>
-                </a>
-              </div>
-            </div>
-          </div>
-        )
-      }
-      setRecent(myArr)
-      
-    }
-    if(account){
-      let myArr2 = []
-      setLoadingHelper(true)
-      if(contributions.data !== [] && contributions.data !== null && contributions.data.length){
-        for(let j=0; j<contributions.data.length; j++){
-          myArr2.push(
-            <div className="col-12 col-md-4">
-            <div className="card">
-              <div className="card-body">
-                <img src={data[j].attributes.ipfs} width="100%" style={{maxWidth:'552px', borderRadius:'8px', padding:'10px'}} />
-                <hr />
-                <h5 style={{textAlign:'center'}}>{data[j].attributes.symbol}</h5>
-                <p style={{textAlign:'center'}}>{data[j].attributes.description}</p>
-                <a href={`/project/${data[j].attributes.address}`}>
-                  <button className="btn btn-dark" style={{width:'100%'}}>Visit</button>
-                </a>
-              </div>
-            </div>
-          </div>
-          )
-        }
-        setContributed(myArr2)
-      }
-      
-    }
-
-
-
-  }, [isLoading, account, loadinghelper, active])
   
-  const pushSidebar = async() => {
-    
-    setShowbar(!showbar);
+
+  
+  const [inp, setInp] = React.useState('')
+  const [localinp, setLocalinp] = React.useState('')
+  const [available, setAvailable] = React.useState(false)
+  const [brandvalue, setBrandvalue] = React.useState(0) // 0 premium, 1 standard
+  const [year, setYear] = React.useState('1')
+  const [checkoutid, setCheckoutid] = React.useState('')
+  const [price, setPrice] = React.useState('')
+  const [ordinalsaddr, setOrdinalsaddr] = React.useState('')
+  const [validaddr, setValidaddr] = React.useState(false)
+
+
+  const checkBrandValue = async(domain) => {
+
+
+    if(domain.length <= 4){
+      setBrandvalue(0)
+    } else {
+      setBrandvalue(1)
+    }
+
+
   }
 
-  const truncateRegex = /^(0x[a-zA-Z0-9]{4})[a-zA-Z0-9]+([a-zA-Z0-9]{4})$/;
+  React.useEffect(() => {
 
-  const truncateEthAddress = (address) => {
-    if(address !== undefined){
-    const match = address.match(truncateRegex);
-    if (!match) return address;
-    return `${match[1]}…${match[2]}`;
+    console.log('fired')
+    const calculatePrice = async() => {
+      if(brandvalue == 0){
+        // premium 
+        switch(year){
+          case '5':
+            setCheckoutid('57554ccb-a178-4eee-92aa-dcb6b4fe7118')
+            setPrice(335)
+            break;
+          case '4':
+            setCheckoutid('a877ccfe-1b2f-4496-b7a1-43f893983f68')
+            setPrice(268)
+            break;
+          case '3':
+            setCheckoutid('aa53c0be-5649-4cab-a1b5-2b36e8212b14')
+            setPrice(201)
+            break;
+          case '2':
+            setCheckoutid('98752666-4c90-4775-8626-af670b0dd90e')
+            setPrice(134)
+            break;
+          default:
+            setCheckoutid('9e0d5b50-a892-4bff-96d1-464d3e959f3d')
+            setPrice(67)
+            break;
+        }
+      } else {
+        switch(year){ // 150,120,90,60,30
+          case '5':
+            setCheckoutid('f3af30aa-ca74-4f1b-b707-1cb84e592576')
+            setPrice(150)
+            break;
+          case '4':
+            setCheckoutid('85a94977-beef-4d6a-bce0-d9fd827dc9c0')
+            setPrice(120)
+            break;
+          case '3':
+            setCheckoutid('ff54dc09-e869-424d-8f4f-14eba1d20de2')
+            setPrice(90)
+            break;
+          case '2':
+            setCheckoutid('48014274-ff21-4d1b-91f5-0fa76d4725c1')
+            setPrice(60)
+            break;
+          default:
+            setCheckoutid('4b3e1811-41c6-46ee-8acc-8a15e870d237')
+            setPrice(30)
+            break;
+        }
+      }
     }
-  };
 
-  const [showdex, setShowdex] = React.useState(false)
+    calculatePrice()
+
+  }, [brandvalue, year])
+
+
+  const searchName = async() => {
+    try{
+
+      if(inp.length < 3){
+        toast.error('Minimum domain length is 3 characters!')
+        throw 'err';
+      }
+      
+
+      if(inp == ''){
+        toast.error("Name cannot be blank")
+        throw 'err';
+      }
+
+      const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+      const res = specialChars.test(inp)
+      console.log(res)
+      if(res == true){
+        toast.error('name can only be characters and numbers. We attach .btc')
+        throw 'err'
+      }
+
+    if(hasWhiteSpace(inp) == true){
+      toast.error('Name cannot contain whitespace')
+      throw 'err'
+    }
+
+    checkBrandValue(inp)
+
+    toast.promise(
+      checkAvailability(inp),
+       {
+         loading: 'Checking availability...',
+         success: <b>Domain available</b>,
+         error: <b>NOT availabe.</b>,
+       }
+     );
+     setLocalinp(inp)
+
+
+
+    }catch(err){
+      console.log('err ', err)
+    }
+  }
+
+  const checkAvailability = async(domain) => {
+      // address 0x42e52c405c956fc2eb4e3df5988182cc80987524
+      const web3 = new Web3(
+        // Replace YOUR-PROJECT-ID with a Project ID from your Infura Dashboard
+        new Web3.providers.HttpProvider("https://nova.arbitrum.io/rpc	")
+      );
+
+      const theString = domain+'.btc'
+
+      const contract = new web3.eth.Contract(ABI, '0x42e52c405c956fc2eb4e3df5988182cc80987524');
+      const toBytes32 = await contract.methods.stringToBytes32(theString).call()
+      console.log(toBytes32)
+      const available = await contract.methods.isUsed(toBytes32).call()
+      console.log('available ', available)
+      if(available == true){
+        setAvailable(false)
+        throw 'not available';
+      }
+      setAvailable(true)
+
+
+  }
+
+  const checkOrdinalsAddress = async(ordaddr) => {
+    if(ordaddr.startsWith('bc1') == true){
+      setOrdinalsaddr(ordaddr)
+      setValidaddr(true)
+    } else {
+      toast.error('This ordinals address is invalid')
+    }
+  }
+
+
+  const chargeFailure = async() => {
+    toast.error('Something went wrong')
+  }
+
+
+
+  function hasWhiteSpace(s) {
+    return s.indexOf(' ') >= 0;
+  }
 
   return (
     <div>
+    <div style={{background:'linear-gradient(90deg,#513eff 0%,#52e5ff 100%)'}}>
       <Navbar />
-      <div className="container">
-        <br /> 
-        <div>
-          <h4 style={{textAlign:'center', color:'grey', fontWeight:'bold'}}>NFT Launchpad created by Blockswap </h4>
-         <button className="btn btn-text" style={{margin:'0 auto', display:'block', color:'white', border:'1px dashed darkolivegreen'}} onClick={() => setShowdex(!showdex)}> Buy <span style={{color:'green', fontWeight:'bold'}}>$BLOCK</span> </button>
-        
-        {showdex ?          <iframe scrolling="no" height="500" width="350" style={{width:"350px",height:"500px", border: "none", borderRadius: "19px", boxShadow: "rgba(0, 0, 0, 0.1) 3px 3px 10px 4px", display: "block", margin:"0 auto"}} src="https://blockswapdex.netlify.app/swap?inputCurrency=ETH&outputCurrency=0x4636b326f19ca9b8a4c98f91672a31c617f249d3&slippage=1200&dark=dark" />      
- : null}
-
-          {/* <TopMarketCap /> */}
-          {/* <VisitStaking />  */}
-          <TopNFTs />
-          <RecentlyCreated />
+      <div>
+        <h1 style={{textAlign:'center', color:'whitesmoke', fontWeight:'bold'}}>
+        Decentralised naming for wallets, websites, & more.
+        </h1>
+        <br />
+        <h1 style={{textAlign:'center', fontSize:'3rem', color:'white', fontWeight:'bold'}}>
+        Your <span style={{padding:'5px', background:' #f2a900', borderRadius:"10px"}}>.BTC</span> domain powered by Ordinals.
+        </h1>
+        <br />
+        <div className="container">
           <div className="row">
-            {/* <div className="col-12 col-md-6">
-              <Price />
-
-            </div> */}
-            <div className="col-12 col-md-12">
-              <MintstarterServices />
+            <div className="col-12">
+              <div class="input-group mb-3">
+                <input value={inp} onChange={(event) => setInp(event.target.value)}  style={{width:'100%', maxWidth:'462px', margin:'0 auto', display:'block', padding:'10px', lineHeight:'2.125rem', fontSize:'1.625rem', border:'3px solid rgb(232, 232, 232)', borderRadius:'10px'}} type="text" class="form-control" placeholder="search for a name" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+              </div>
+            </div>
+            <div className="col-12">
+              <div class="input-group-append">
+                <button onClick={searchName} class="btn btn-light" type="button" style={{margin:'0 auto', fontSize:'1.5rem'}}>Search</button>
+              </div>
             </div>
           </div>
-          <AnyOwnedByUser />
+        </div>
+        <br />
 
+      </div>
+      {/* <Footer /> */}
+
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
+   </div>
+   <br />
+   {localinp !== '' ? 
+      <div className="container" style={{textAlign:'center'}}>
+      <div className="row">
+        <div className="col-6">
+                <h4>{localinp}.btc</h4>
+            </div>
+            <div className="col-6">
+                <h4>{available == true ? 'Available' : 'Not Available'}</h4>
         </div>
       </div>
-      <Footer />
+     </div>
+   : null}
+
+   {available == true ?     <div className="container" style={{textAlign:'center'}}>
+      <div className="row">
+        <div className="col-12 col-md-6">
+          <label class="mr-sm-2" for="inlineFormCustomSelect">Ordinals Receiving Address</label>
+          <input onChange={(event) => checkOrdinalsAddress(event.target.value)}  style={{width:'100%', maxWidth:'462px', border:'3px solid rgb(232, 232, 232)', borderRadius:'10px'}} type="text" class="form-control" placeholder="bc1qu23uv24rcw8wptptzrtx0ckay74859rzkjnpg4" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+        </div>
+        <div className="col-12 col-md-6">
+          <label class="mr-sm-2" for="inlineFormCustomSelect">Registration Period </label>
+          <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" onChange={(event) => setYear(event.target.value)}>
+            <option selected value="1">1 year</option>
+            <option value="2">2 years</option>
+            <option value="3">3 years</option>
+            <option value="4">4 years</option>
+            <option value="5">5 years</option>
+          </select>
+        </div>
+        <div className="col-12">
+          <br />
+          <div className="card">
+            <div className="card-body">
+              <h4>You are about to buy <span style={{fontWeight:'bold'}}>{localinp}.btc</span></h4>
+              {brandvalue == 0 ? <p className="badge badge-dark">This is a PREMIUM domain</p> : <p className="badge badge-secondary">This is a STANDARD domain</p>}
+              <h4>{year} year(s) </h4>
+              <h4>Promotional Offer: </h4>
+              <h4 style={{fontWeight:'bold', color:'#07da63'}}>${price} </h4>
+              <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onChargeFailure={chargeFailure} checkoutId={checkoutid} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+
+    </div> : null}
+
+
+   <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
    </div>
 
   ); 

@@ -71,7 +71,6 @@ const GlobalStyles = createGlobalStyle`
   body {
     // font-family: 'OpenSans';
     height: 100%;
-    background: #151617;
   }
 `
 
@@ -87,9 +86,7 @@ function App() {
           <Switch>  
 
           <Route path="/">
-            <p style={{textAlign:'center', color:'white'}}>
-              Coming Soon
-            </p>
+            <Homepage />
           </Route>
         </Switch>
     </Web3ReactProvider>
