@@ -214,9 +214,8 @@ function Homepage() {
     toast.error('Something went wrong')
   }
 
-  const chargeSuccess = async(chargedata) => {
-    console.log('data is ', chargedata)
-
+  const chargeSuccess = async() => {
+    
     toast.promise(
       postOrderInfo(),
        {
@@ -324,7 +323,7 @@ function Homepage() {
               <h4>{year} year(s) </h4>
               <h4>Promotional Offer: </h4>
               <h4 style={{fontWeight:'bold', color:'#07da63'}}>${price} </h4>
-              <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onChargeSuccess={(event) => chargeSuccess(event)} onChargeFailure={chargeFailure} checkoutId={checkoutid} />
+              <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onPaymentDetected={chargeSuccess} onChargeFailure={chargeFailure} checkoutId={checkoutid} />
             </div>
           </div>
         </div>
