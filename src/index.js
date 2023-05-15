@@ -71,6 +71,7 @@ const GlobalStyles = createGlobalStyle`
   body {
     // font-family: 'OpenSans';
     height: 100%;
+    font-family: 'Quicksand', sans-serif;
   }
 `
 

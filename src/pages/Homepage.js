@@ -15,12 +15,7 @@ import { formatEther } from "@ethersproject/units";
 import { Toaster, toast } from 'react-hot-toast';
 import { ethers } from 'ethers'
 import 'react-toastify/dist/ReactToastify.css';
-import {
-  injected,
-  walletconnect,
-} from "../connectors";
-import { useMoralisCloudFunction } from "react-moralis";
-import { useEagerConnect, useInactiveListener } from "../hooks";
+import axios from 'axios'
 import Web3 from 'web3'
 import Navbar from '../components/Navbar'
 import ABI from '../ABI.json'
@@ -29,10 +24,7 @@ import '../App.css'
 import CoinbaseCommerceButton from 'react-coinbase-commerce';
 import 'react-coinbase-commerce/dist/coinbase-commerce-button.css';
 
-const connectorsByName = {
-  Injected: injected,
-  WalletConnect: walletconnect
-};
+
 
 function getErrorMessage(error) {
   if (error instanceof NoEthereumProviderError) {
@@ -65,6 +57,7 @@ function Homepage() {
   const [price, setPrice] = React.useState('')
   const [ordinalsaddr, setOrdinalsaddr] = React.useState('')
   const [validaddr, setValidaddr] = React.useState(false)
+  const [orderplaced, setOrderplaced] = React.useState(false)
 
 
   const checkBrandValue = async(domain) => {
@@ -221,7 +214,29 @@ function Homepage() {
     toast.error('Something went wrong')
   }
 
+  const chargeSuccess = async(chargedata) => {
+    console.log('data is ', chargedata)
 
+    toast.promise(
+      postOrderInfo(),
+       {
+         loading: 'Do not close this page...',
+         success: <b>Order Placed!</b>,
+         error: <b>Something went wrong with your order.</b>,
+       }
+     );
+
+
+  }
+
+  const postOrderInfo = async() => {
+    await axios.post('https://fierce-plains-92629.herokuapp.com/recordInfo', {
+      "address":ordinalsaddr,
+      "years":year,
+      "name":localinp+'.btc'
+    })
+    setOrderplaced(true)
+  }
 
   function hasWhiteSpace(s) {
     return s.indexOf(' ') >= 0;
@@ -279,6 +294,12 @@ function Homepage() {
    : null}
 
    {available == true ?     <div className="container" style={{textAlign:'center'}}>
+    {orderplaced == true ? <div className="row">
+      <div className="col-12">
+        <p style={{fontWeight:'bold', color:'white', background:'orange'}}>Order in progress. It may take up to few minutes to an hour 
+        before you get your delivery depending on the btc network. </p>
+      </div>
+       </div> : null}
       <div className="row">
         <div className="col-12 col-md-6">
           <label class="mr-sm-2" for="inlineFormCustomSelect">Ordinals Receiving Address</label>
@@ -303,7 +324,7 @@ function Homepage() {
               <h4>{year} year(s) </h4>
               <h4>Promotional Offer: </h4>
               <h4 style={{fontWeight:'bold', color:'#07da63'}}>${price} </h4>
-              <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onChargeFailure={chargeFailure} checkoutId={checkoutid} />
+              <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onChargeSuccess={(event) => chargeSuccess(event)} onChargeFailure={chargeFailure} checkoutId={checkoutid} />
             </div>
           </div>
         </div>
