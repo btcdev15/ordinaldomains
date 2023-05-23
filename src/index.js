@@ -28,13 +28,7 @@ import {
   injected,
 } from "./connectors";
 import Homepage from './pages/Homepage';
-import KYC from './pages/KYC';
-import NFTDROP from './pages/NFTDrop';
-import DEX from './pages/Dex'
-import Launch from './pages/Launch'
-import Services from './pages/Services'
-import NFTSale from './pages/Nftsale'
-import TokenCreator from './pages/TokenCreator'
+import DomainExplorer from './pages/DomainExplorer'
 import ConnectModal from './components/ConnectModal'
 // import Token from './Token';
 
@@ -71,7 +65,7 @@ const GlobalStyles = createGlobalStyle`
   body {
     // font-family: 'OpenSans';
     height: 100%;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
 `
 
@@ -85,6 +79,10 @@ function App() {
 <ConnectModal />
 
           <Switch>  
+
+          <Route path="/domain/:thedomain">
+            <DomainExplorer />
+          </Route>
 
           <Route path="/">
             <Homepage />

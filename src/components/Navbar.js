@@ -7,16 +7,26 @@ function NavBar() {
   
 
   return (
-<nav class="navbar navbar-expand-lg navbar-dark" style={{ minHeight:'80px', background:'transparent'}}>
+    <div className="container">
+<nav class="navbar navbar-expand-lg navbar-light" style={{ minHeight:'80px', background:'transparent'}}>
   <a class="navbar-brand" href="/" style={{marginLeft:"3%"}}> <img src="/logo.svg" style={{width:'100%', maxWidth:'200px'}} alt="logo" /> </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav mr-auto" style={{margin:'0 auto'}}>
       <li class="nav-item">
         <a class="nav-link" href="/">Home </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/">About Us </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/">Docs </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/">Why Choose Us </a>
       </li>
       {/* <li class="nav-item">
         <a class="nav-link" href="/services">Services</a>
@@ -37,19 +47,18 @@ function NavBar() {
       </li> */}
 
     </ul>
-    {/* <div class="d-flex" style={{minWidth:'120px'}}>
-        Mellow
-    </div>
     <div class="d-flex">
-    <a href="https://t.me/mintstarter" target="_blank" rel="noreferrer">
-    <img src="/telegram.svg" width="40px" />
+    <a href="/" target="_blank" rel="noreferrer">
+    <button className="btn btn-primary" style={{minWidth:'130px'}}>
+      Join Community
+    </button>
     </a>
-    </div> */}
+    </div>
   </div>
 
 
 </nav>
-
+</div>
 
   ); 
 }

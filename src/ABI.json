@@ -1,10 +1,15 @@
 [
 	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "_domain",
-				"type": "bytes32"
+				"type": "string"
 			},
 			{
 				"internalType": "uint256",
@@ -12,14 +17,19 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "bytes32",
-				"name": "_txHash",
-				"type": "bytes32"
+				"internalType": "uint256",
+				"name": "_creationDate",
+				"type": "uint256"
 			},
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
+				"name": "_txHash",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
 				"name": "_resolver",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "addDomain",
@@ -30,9 +40,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32[]",
+				"internalType": "string[]",
 				"name": "_domain",
-				"type": "bytes32[]"
+				"type": "string[]"
 			},
 			{
 				"internalType": "uint256[]",
@@ -40,43 +50,25 @@
 				"type": "uint256[]"
 			},
 			{
-				"internalType": "bytes32[]",
-				"name": "_txHash",
-				"type": "bytes32[]"
+				"internalType": "uint256[]",
+				"name": "_creationDate",
+				"type": "uint256[]"
 			},
 			{
-				"internalType": "bytes32[]",
+				"internalType": "string[]",
+				"name": "_txHash",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
 				"name": "_resolver",
-				"type": "bytes32[]"
+				"type": "string[]"
 			}
 		],
 		"name": "addDomains",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32[]",
-				"name": "_domains",
-				"type": "bytes32[]"
-			},
-			{
-				"internalType": "bytes32[]",
-				"name": "_resolvers",
-				"type": "bytes32[]"
-			}
-		],
-		"name": "modifyDomainsResolver",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -89,9 +81,9 @@
 		"name": "allDomains",
 		"outputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -119,9 +111,28 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
+			}
+		],
+		"name": "creationDate",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"name": "expirationDate",
@@ -151,9 +162,9 @@
 		"name": "fetchPage",
 		"outputs": [
 			{
-				"internalType": "bytes32[]",
+				"internalType": "string[]",
 				"name": "values",
-				"type": "bytes32[]"
+				"type": "string[]"
 			},
 			{
 				"internalType": "uint256",
@@ -167,9 +178,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "isUsed",
@@ -197,6 +208,24 @@
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "string[]",
+				"name": "_domains",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "_resolvers",
+				"type": "string[]"
+			}
+		],
+		"name": "modifyDomainsResolver",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "owner",
 		"outputs": [
@@ -212,17 +241,17 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "resolver",
 		"outputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -250,17 +279,17 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "txHashCreation",
 		"outputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",

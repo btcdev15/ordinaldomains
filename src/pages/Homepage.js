@@ -49,288 +49,381 @@ function Homepage() {
 
   
   const [inp, setInp] = React.useState('')
-  const [localinp, setLocalinp] = React.useState('')
-  const [available, setAvailable] = React.useState(false)
-  const [brandvalue, setBrandvalue] = React.useState(0) // 0 premium, 1 standard
-  const [year, setYear] = React.useState('1')
-  const [checkoutid, setCheckoutid] = React.useState('')
-  const [price, setPrice] = React.useState('')
-  const [ordinalsaddr, setOrdinalsaddr] = React.useState('')
-  const [validaddr, setValidaddr] = React.useState(false)
-  const [orderplaced, setOrderplaced] = React.useState(false)
-
-
-  const checkBrandValue = async(domain) => {
-
-
-    if(domain.length <= 4){
-      setBrandvalue(0)
-    } else {
-      setBrandvalue(1)
-    }
-
-
-  }
-
-  React.useEffect(() => {
-
-    console.log('fired')
-    const calculatePrice = async() => {
-      if(brandvalue == 0){
-        // premium 
-        switch(year){
-          case '5':
-            setCheckoutid('57554ccb-a178-4eee-92aa-dcb6b4fe7118')
-            setPrice(335)
-            break;
-          case '4':
-            setCheckoutid('a877ccfe-1b2f-4496-b7a1-43f893983f68')
-            setPrice(268)
-            break;
-          case '3':
-            setCheckoutid('aa53c0be-5649-4cab-a1b5-2b36e8212b14')
-            setPrice(201)
-            break;
-          case '2':
-            setCheckoutid('98752666-4c90-4775-8626-af670b0dd90e')
-            setPrice(134)
-            break;
-          default:
-            setCheckoutid('9e0d5b50-a892-4bff-96d1-464d3e959f3d')
-            setPrice(67)
-            break;
-        }
-      } else {
-        switch(year){ // 150,120,90,60,30
-          case '5':
-            setCheckoutid('f3af30aa-ca74-4f1b-b707-1cb84e592576')
-            setPrice(150)
-            break;
-          case '4':
-            setCheckoutid('85a94977-beef-4d6a-bce0-d9fd827dc9c0')
-            setPrice(120)
-            break;
-          case '3':
-            setCheckoutid('ff54dc09-e869-424d-8f4f-14eba1d20de2')
-            setPrice(90)
-            break;
-          case '2':
-            setCheckoutid('48014274-ff21-4d1b-91f5-0fa76d4725c1')
-            setPrice(60)
-            break;
-          default:
-            setCheckoutid('4b3e1811-41c6-46ee-8acc-8a15e870d237')
-            setPrice(30)
-            break;
-        }
-      }
-    }
-
-    calculatePrice()
-
-  }, [brandvalue, year])
 
 
   const searchName = async() => {
     try{
-
       if(inp.length < 3){
         toast.error('Minimum domain length is 3 characters!')
         throw 'err';
       }
+
       
 
-      if(inp == ''){
-        toast.error("Name cannot be blank")
-        throw 'err';
+      if(inp !== ''){
+
+        if(inp.includes('.btc')){
+          var ret = inp.replace(/.btc/g,'');
+          if(ret.length < 3){
+            toast.error('Minimum domain length is 3 characters!')
+            throw 'err';
+          }
+
+          const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+          const res = specialChars.test(ret)
+          console.log(res)
+          if(res == true){
+            toast.error('name can only be characters and numbers. We attach .btc')
+            throw 'err'
+          }
+    
+
+          window.location.href = `/domain/${ret}`
+        } else {
+          const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+          const res = specialChars.test(inp)
+          if(res == true){
+            toast.error('name can only be characters and numbers. We attach .btc')
+            throw 'err'
+          }
+    
+
+          window.location.href = `/domain/${inp}`
+        }
       }
-
-      const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-      const res = specialChars.test(inp)
-      console.log(res)
-      if(res == true){
-        toast.error('name can only be characters and numbers. We attach .btc')
-        throw 'err'
-      }
-
-    if(hasWhiteSpace(inp) == true){
-      toast.error('Name cannot contain whitespace')
-      throw 'err'
-    }
-
-    checkBrandValue(inp)
-
-    toast.promise(
-      checkAvailability(inp),
-       {
-         loading: 'Checking availability...',
-         success: <b>Domain available</b>,
-         error: <b>NOT availabe.</b>,
-       }
-     );
-     setLocalinp(inp)
-
-
 
     }catch(err){
-      console.log('err ', err)
+
     }
-  }
-
-  const checkAvailability = async(domain) => {
-      // address 0x42e52c405c956fc2eb4e3df5988182cc80987524
-      const web3 = new Web3(
-        // Replace YOUR-PROJECT-ID with a Project ID from your Infura Dashboard
-        new Web3.providers.HttpProvider("https://nova.arbitrum.io/rpc	")
-      );
-
-      const theString = domain+'.btc'
-
-      const contract = new web3.eth.Contract(ABI, '0x42e52c405c956fc2eb4e3df5988182cc80987524');
-      const toBytes32 = await contract.methods.stringToBytes32(theString).call()
-      console.log(toBytes32)
-      const available = await contract.methods.isUsed(toBytes32).call()
-      console.log('available ', available)
-      if(available == true){
-        setAvailable(false)
-        throw 'not available';
-      }
-      setAvailable(true)
-
 
   }
 
-  const checkOrdinalsAddress = async(ordaddr) => {
-    if(ordaddr.startsWith('bc1') == true){
-      setOrdinalsaddr(ordaddr)
-      setValidaddr(true)
-    } else {
-      toast.error('This ordinals address is invalid')
-    }
-  }
-
-
-  const chargeFailure = async() => {
-    toast.error('Something went wrong')
-  }
-
-  const chargeSuccess = async() => {
-    
-    toast.promise(
-      postOrderInfo(),
-       {
-         loading: 'Do not close this page...',
-         success: <b>Order Placed!</b>,
-         error: <b>Something went wrong with your order.</b>,
-       }
-     );
-
-
-  }
-
-  const postOrderInfo = async() => {
-    await axios.post('https://fierce-plains-92629.herokuapp.com/recordInfo', {
-      "address":ordinalsaddr,
-      "years":year,
-      "name":localinp+'.btc'
-    })
-    setOrderplaced(true)
-  }
-
-  function hasWhiteSpace(s) {
-    return s.indexOf(' ') >= 0;
-  }
 
   return (
     <div>
-    <div style={{background:'linear-gradient(90deg,#513eff 0%,#52e5ff 100%)'}}>
-      <Navbar />
-      <div>
-        <h1 style={{textAlign:'center', color:'whitesmoke', fontWeight:'bold'}}>
-        Decentralised naming for wallets, websites, & more.
-        </h1>
-        <br />
-        <h1 style={{textAlign:'center', fontSize:'3rem', color:'white', fontWeight:'bold'}}>
-        Your <span style={{padding:'5px', background:' #f2a900', borderRadius:"10px"}}>.BTC</span> domain powered by Ordinals.
-        </h1>
-        <br />
-        <div className="container">
-          <div className="row">
-            <div className="col-12">
-              <div class="input-group mb-3">
-                <input value={inp} onChange={(event) => setInp(event.target.value)}  style={{width:'100%', maxWidth:'462px', margin:'0 auto', display:'block', padding:'10px', lineHeight:'2.125rem', fontSize:'1.625rem', border:'3px solid rgb(232, 232, 232)', borderRadius:'10px'}} type="text" class="form-control" placeholder="search for a name" aria-label="Recipient's username" aria-describedby="basic-addon2" />
-              </div>
+    <Navbar />
+    <div className="section-1">
+      <span className="ellipse" />
+      <div className="container" style={{marginTop:'5rem'}}>
+        <div className="row">
+          <div className="col-12 col-md-6">
+            <h1 style={{fontWeight:'bold', fontSize:'3rem', marginTop:'5rem'}}>
+              The Perfect Domain <span style={{color:'#4267B2'}}>.BTC</span> Is  Here
+            </h1>
+            <p>
+            Decentralised naming for wallets, websites, & more. Your .BTC domain powered by Ordinals.
+            </p>
+            <div className="inputcontainer">
+            <input value={inp} onChange={(event) => setInp(event.target.value)}  style={{width:'100%', display:'inline', maxWidth:'350px', padding:'10px', lineHeight:'2.125rem', fontSize:'1.625rem', border:'0px', background:'transparent'}} type="text" class="form-control" placeholder="Type the domain you want" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+            <button onClick={searchName} class="btn btn-primary" type="button" style={{float:'right', marginRight:'5px', marginTop:'2px', fontSize:'1.5rem'}}>Search</button>
+
             </div>
-            <div className="col-12">
-              <div class="input-group-append">
-                <button onClick={searchName} class="btn btn-light" type="button" style={{margin:'0 auto', fontSize:'1.5rem'}}>Search</button>
+          </div>
+          <div className="col-12 col-md-6">
+            <img src="/btc.svg" alt="btc" style={{width:'100%', maxWidth:'501px'}} />
+          </div>
+
+          <div className="col-12">
+            <div className="card-custom" style={{marginTop:'5rem'}}>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-4 col-md-3" style={{textAlign:'center'}}>
+                    <h2 style={{color:'#4267B2', fontWeight:'bold'}}>
+                      30M+
+                    </h2>
+                    <p style={{color:'#252525'}}>
+                      Domains Registered
+                    </p>
+                  </div>
+                  <div className="col-4 col-md-3" style={{textAlign:'center'}}>
+                    <h2 style={{color:'#4267B2', fontWeight:'bold'}}>
+                      250
+                    </h2>
+                    <p style={{color:'#252525'}}>
+                      Unique Users
+                    </p>
+                  </div>
+                  <div className="col-4 col-md-3" style={{textAlign:'center'}}>
+                    <h2 style={{color:'#4267B2', fontWeight:'bold'}}>
+                    €16.82
+                    </h2>
+                    <p style={{color:'#252525'}}>
+                      Starting From
+                    </p>
+                  </div>
+                  <div className="col-12 col-md-3" style={{textAlign:'center'}}>
+                    <h2 style={{color:'#4267B2', fontWeight:'bold'}}>
+                      50 BTC
+                    </h2>
+                    <p style={{color:'#252525'}}>
+                      Trading Volume
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+          
+          <div className="col-12 col-md-6" style={{marginTop:'5rem'}}>
+            <img src="/content.svg" alt="content" style={{width:"100%", maxWidth:'540px'}} />
+          </div>
+          <div className="col-12 col-md-6" style={{marginTop:'5rem'}}>
+            <h1 style={{fontWeight:'bold', color:'black', fontSize:'3rem', marginTop:'3rem'}}>
+            Entire Metadata Securely Preserved on Bitcoin's First Layer
+            </h1>
+            <p style={{color:'#252525'}}>
+            Each byte of BTCDOMAIN's metadata finds its permanent home on the Bitcoin blockchain. The .btc domains are etched as structured JSON text directly onto the Bitcoin mainnet, where every domain serves as a unique inscription, comparable to a BTC NFT. 
+            </p>
+            <p style={{color:'#252525'}}>
+            With Bitcoin's existence, your domain's usability and searchability stand the test of time. No need for trust, simply verify!
+            </p>
+          </div>
+          <div className="col-12">
+            <br /> <br />
+          </div>
         </div>
-        <br />
-
       </div>
-      {/* <Footer /> */}
+      
+    </div> 
 
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
-   </div>
-   <br />
-   {localinp !== '' ? 
-      <div className="container" style={{textAlign:'center'}}>
+
+    <div className="section-2" style={{background:'#F4F4F4'}}>
+    <div className="container">
       <div className="row">
-        <div className="col-6">
-                <h4>{localinp}.btc</h4>
-            </div>
-            <div className="col-6">
-                <h4>{available == true ? 'Available' : 'Not Available'}</h4>
-        </div>
-      </div>
-     </div>
-   : null}
-
-   {available == true ?     <div className="container" style={{textAlign:'center'}}>
-    {orderplaced == true ? <div className="row">
-      <div className="col-12">
-        <p style={{fontWeight:'bold', color:'white', background:'orange'}}>Order in progress. It may take up to few minutes to an hour 
-        before you get your delivery depending on the btc network. </p>
-      </div>
-       </div> : null}
-      <div className="row">
-        <div className="col-12 col-md-6">
-          <label class="mr-sm-2" for="inlineFormCustomSelect">Ordinals Receiving Address</label>
-          <input onChange={(event) => checkOrdinalsAddress(event.target.value)}  style={{width:'100%', maxWidth:'462px', border:'3px solid rgb(232, 232, 232)', borderRadius:'10px'}} type="text" class="form-control" placeholder="bc1qu23uv24rcw8wptptzrtx0ckay74859rzkjnpg4" aria-label="Recipient's username" aria-describedby="basic-addon2" />
-        </div>
-        <div className="col-12 col-md-6">
-          <label class="mr-sm-2" for="inlineFormCustomSelect">Registration Period </label>
-          <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" onChange={(event) => setYear(event.target.value)}>
-            <option selected value="1">1 year</option>
-            <option value="2">2 years</option>
-            <option value="3">3 years</option>
-            <option value="4">4 years</option>
-            <option value="5">5 years</option>
-          </select>
-        </div>
         <div className="col-12">
-          <br />
-          <div className="card">
-            <div className="card-body">
-              <h4>You are about to buy <span style={{fontWeight:'bold'}}>{localinp}.btc</span></h4>
-              {brandvalue == 0 ? <p className="badge badge-dark">This is a PREMIUM domain</p> : <p className="badge badge-secondary">This is a STANDARD domain</p>}
-              <h4>{year} year(s) </h4>
-              <h4>Promotional Offer: </h4>
-              <h4 style={{fontWeight:'bold', color:'#07da63'}}>${price} </h4>
-              <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onPaymentDetected={chargeSuccess} onChargeFailure={chargeFailure} checkoutId={checkoutid} />
+          <br /> <br />
+        </div>
+          <div className="col-12">
+            <h1 style={{fontSize:'3rem', fontWeight:'bold', textAlign:'center'}}>Register .BTC Domains in 3 Easy steps</h1>
+          </div>
+          <div className="col-12 col-md-4">
+            <div className="card-custom" style={{marginTop:'5rem'}}>
+              <div className="card-body">
+                <img src="/card1.svg" alt="card1" style={{width:'100%', maxWidth:'50px', margin:'0 auto', display:'block'}} />
+                <h2 style={{textAlign:'center'}}>Search</h2>
+                <p style={{textAlign:'center'}}>
+                Check the availability of your preferred domain.
+                </p>
+              </div>
             </div>
+          </div>
+
+          <div className="col-12 col-md-4">
+            <div className="card-custom" style={{marginTop:'5rem'}}>
+              <div className="card-body">
+                <img src="/card2.svg" alt="card2" style={{width:'100%', maxWidth:'50px', margin:'0 auto', display:'block'}} />
+                <h2 style={{textAlign:'center'}}>Register</h2>
+                <p style={{textAlign:'center'}}>
+                Register with a Bitcoin connected Stacks account in just a few clicks.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12 col-md-4">
+            <div className="card-custom" style={{marginTop:'5rem'}}>
+              <div className="card-body">
+                <img src="/card2.svg" alt="card1" style={{width:'100%', maxWidth:'50px', margin:'0 auto', display:'block'}} />
+                <h2 style={{textAlign:'center'}}>Manage</h2>
+                <p style={{textAlign:'center'}}>
+                Manage and self-custody your .BTC domains all in one place.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="col-12">
+            <br /> <br />
+          </div>
+      </div>
+    </div>
+    </div>
+
+    <div className="section-3">
+      <div className="container">
+        <div className="row">
+        <div className="col-12 col-md-4" style={{marginTop:'5rem'}}>
+            <h1 style={{fontWeight:'bold', color:'black', fontSize:'3rem', marginTop:'3rem'}}>
+            Advanced Security Features
+                        </h1>
+            <p style={{color:'#252525'}}>
+            ✅Stored on BTC Chain
+            </p>
+            <p style={{color:'#252525'}}>
+            ✅Protected through secure HMAC
+            </p>
+            <p style={{color:'#252525'}}>
+            ✅Timestamped
+            </p>
+            <p style={{color:'#252525'}}>
+            ✅Signed securely by OrdinalDomains
+            </p>
+          </div>
+        <div className="col-12 col-md-8" style={{marginTop:'5rem'}}>
+            <img src="/metadata.svg" alt="metadata" style={{width:"100%", maxWidth:'824px'}} />
           </div>
         </div>
       </div>
-      <br />
+    </div>
 
-    </div> : null}
+
+    <div className="section-2" style={{background:'#F4F4F4'}}>
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+          <h1 style={{fontWeight:'bold', color:'black', fontSize:'3rem', marginTop:'3rem', textAlign:'center'}}>
+            Latest Domain Sold
+                        </h1>
+          </div>
+            <div className="col-6 col-md-3">
+              <div className="card-custom" style={{marginTop:'5rem'}}>
+                <div className="card-body" style={{textAlign:'center', fontWeight:'bold'}}>
+                  london.btc
+                </div>
+              </div>
+            </div>
+            <div className="col-6 col-md-3">
+              <div className="card-custom" style={{marginTop:'5rem'}}>
+                <div className="card-body" style={{textAlign:'center', fontWeight:'bold'}}>
+                  gold.btc
+                </div>
+              </div>
+            </div>
+            <div className="col-6 col-md-3">
+              <div className="card-custom" style={{marginTop:'5rem'}}>
+                <div className="card-body" style={{textAlign:'center', fontWeight:'bold'}}>
+                  bitcoin.btc
+                </div>
+              </div>
+            </div>
+            <div className="col-6 col-md-3">
+              <div className="card-custom" style={{marginTop:'5rem'}}>
+                <div className="card-body" style={{textAlign:'center', fontWeight:'bold'}}>
+                  google.btc
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <br /> <br />
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div className="section-3">
+      <div className="container">
+        <div className="row">
+            <div className="col-12">
+              <br /> <br />
+            </div>
+            <div className="col-12">
+              <h1 style={{textAlign:'center', fontWeight:'bold'}}>
+                FAQ's
+              </h1>
+              <p style={{textAlign:'center', width:'100%', maxWidth:'672px', margin:'0 auto', display:'block', marginTop:'2rem'}}>
+              We attempt to answer some of our frequently asked questions. If you like to learn more and discuss your use-case, get in touch now.
+              </p>
+            </div>
+            <div className="col-12">
+            <div id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne" style={{background:'white'}}>
+      <h5 class="mb-0">
+        <button class="btn btn-link" style={{color:'black'}} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Collapsible Group Item #1
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo"  style={{background:'white'}}>
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" style={{color:'black'}} data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Collapsible Group Item #2
+        </button>
+      </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+      <div class="card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingThree"  style={{background:'white'}}>
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" style={{color:'black'}} data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Collapsible Group Item #3
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      </div>
+    </div>
+  </div>
+</div>
+            </div>
+        </div>
+      </div>
+      <br /> <br />
+    </div>
+
+
+    <div className="section-4">
+      <footer style={{background:'#252525', color:'white', minHeight:'300px'}}>
+          <div className="container">
+            <div className="row">
+              <div className="col-12">
+                <br /> <br />
+              </div>
+              <div className="col-12">
+                <img src="/logo.svg" alt="logo" style={{width:'100%', maxWidth:'220px',margin:'0 auto' ,display:'block', filter:'brightness(0) invert(1)'}} />
+              </div>
+              <div className="col-12">
+                <br /> 
+              </div>
+              <div className="col-12">
+                <p style={{width:'100%', maxWidth:'690px', margin:'0 auto', display:'block'}}>Maecenas a ultrices risus. Etiam accumsan ligula feugiat facilisis dictum. Sed viverra vitae mi vel malesuada. Sed sem lectus, efficitur id nunc et, dictum lacinia nibh.</p>
+              </div>
+              <div className="col-12" style={{textAlign:'center'}}>
+                <hr />
+                <a href="/home" style={{textDecoration:'none', color:'white', marginRight:'5px'}}>Home</a>                <a style={{textDecoration:'none', color:'white', marginRight:'5px'}} href="/home">About Us</a>                <a style={{textDecoration:'none', color:'white'}} href="/home">FAQs</a>
+
+              </div>
+              <div className="col-12" >
+                <br />
+              </div>
+              <div className="col-12">
+                <div style={{width:'100%', margin:'0 auto', display:'block', textAlign:'center'}}>
+                  <img src="/tg.svg" alt="telegram" width="42px" />
+                  <img src="/tw.svg" alt="telegram" width="42px" />
+                </div>
+              </div>
+              <div className="col-12">
+                <hr style={{borderTop:'1px solid white'}} /> 
+              </div>
+              <div className="col-6 col-md-6">
+                <p>
+                ©2023 Copyright ORDINALDOMAINS
+                </p>
+              </div>
+              <div className="col-6 col-md-6">
+                <p style={{textAlign:'right'}}>
+                Terms and Conditions
+                </p>
+              </div>
+            </div>
+          </div>
+      </footer>
+    </div>
 
 
    <Toaster
