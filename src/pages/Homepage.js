@@ -78,7 +78,7 @@ function Homepage() {
           }
     
 
-          window.location.href = `/domain/${ret}`
+          window.location.href = `/#/domain/${ret}`
         } else {
           const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
           const res = specialChars.test(inp)

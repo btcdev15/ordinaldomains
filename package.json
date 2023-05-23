@@ -1,7 +1,7 @@
 {
   "name": "dice",
   "version": "0.1.0",
-  "homepage": "https://ordinaldomains.io",
+  "homepage": "https://ordinaldomains.io/",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.8",

@@ -13,7 +13,7 @@ import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from "@web3
 import { Web3Provider } from "@ethersproject/providers";
 import { formatEther } from "@ethersproject/units";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
   Link
@@ -71,7 +71,7 @@ const GlobalStyles = createGlobalStyle`
 
 function App() {
   return (
-    <Router>
+    <Router basename="/">
     <div>
 
     <GlobalStyles />
