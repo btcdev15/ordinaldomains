@@ -142,11 +142,9 @@ function ConnectModal() {
                 <div className="row">
                     {account && active ? <div>
                         <p style={{textAlign:'center'}}>Connected as <span style={{fontWeight:'bold'}}>{account}</span> </p>
-                        <p style={{textAlign:'center'}}>on {chainId == 1 ? "Ethereum" : chainId == 137 ? "Polygon" : chainId == 56 ? 'Binance Smart Chain' : "Unsupported chain"}</p>
-                        <p style={{textAlign:'center', color:'grey'}}>If you want to change your chain, do it manually in your wallet </p>
                         <button className="btn btn-outline-dark" style={{width:'100%'}} onClick={() =>               deactivate()}>Disconnect</button>
                         </div> : <div style={{ width:'100%'}}>
-                            <p style={{textAlign:'center'}}>Connect to Ethereum, Polygon or Binance Smart Chain</p>
+                            <p style={{textAlign:'center'}}>Connect to Ethereum</p>
                             <div className="row">
                                 <div className="col" style={{cursor:'pointer'}} onClick={() => {
                                 setActivatingConnector(connectorsByName["Injected"]);

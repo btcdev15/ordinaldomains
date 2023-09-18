@@ -54,11 +54,13 @@ function DomainExplorer() {
   
   const [inp, setInp] = React.useState('')
   const [inp2, setInp2] = React.useState('')
+  const [isdisabled, setIsdisabled] = React.useState(false)
+  const [thelink, setThelink] = React.useState('')
 
   const [localinp, setLocalinp] = React.useState('')
-  const [available, setAvailable] = React.useState(false)
+  const [available, setAvailable] = React.useState()
   const [brandvalue, setBrandvalue] = React.useState(0) // 0 premium, 1 standard
-  const [year, setYear] = React.useState('1')
+  const [year, setYear] = React.useState('5')
   const [checkoutid, setCheckoutid] = React.useState('')
   const [price, setPrice] = React.useState('')
   const [ordinalsaddr, setOrdinalsaddr] = React.useState('')
@@ -68,6 +70,21 @@ function DomainExplorer() {
   const [creation, setCreation] = React.useState('')
   const [txhash, setTxhash] = React.useState('')
   const [resolver, setResolver] = React.useState('')
+  const [creator, setCreator] = React.useState('')
+
+
+
+  // const handleCoinbaseMessage = (message) => {
+  //   if (message.data && message.data.buttonId && message.data.event === 'charge_confirmed') {
+  //     // Do whatever you need to here
+  //     chargeSuccess()
+  //   }
+  // };
+  
+  // React.useEffect(() => {
+  //   window.addEventListener('message', handleCoinbaseMessage);
+  //   return () => window.removeEventListener('message', handleCoinbaseMessage);
+  // }, []);
 
 
   React.useEffect(() => {
@@ -107,23 +124,23 @@ function DomainExplorer() {
         switch(year){
           case '5':
             setCheckoutid('57554ccb-a178-4eee-92aa-dcb6b4fe7118')
-            setPrice(345)
+            setPrice(1279.6)
             break;
           case '4':
             setCheckoutid('a877ccfe-1b2f-4496-b7a1-43f893983f68')
-            setPrice(278)
+            setPrice(1023.68)
             break;
           case '3':
             setCheckoutid('aa53c0be-5649-4cab-a1b5-2b36e8212b14')
-            setPrice(211)
+            setPrice(767.76)
             break;
           case '2':
             setCheckoutid('98752666-4c90-4775-8626-af670b0dd90e')
-            setPrice(144)
+            setPrice(511.84)
             break;
           default:
             setCheckoutid('9e0d5b50-a892-4bff-96d1-464d3e959f3d')
-            setPrice(77)
+            setPrice(255.92)
             break;
         }
       } else {
@@ -131,23 +148,23 @@ function DomainExplorer() {
           switch(year){ // 150,120,90,60,30
             case '5':
               setCheckoutid('f3af30aa-ca74-4f1b-b707-1cb84e592576')
-              setPrice(160)
+              setPrice(240)
               break;
             case '4':
               setCheckoutid('85a94977-beef-4d6a-bce0-d9fd827dc9c0')
-              setPrice(130)
+              setPrice(192)
               break;
             case '3':
               setCheckoutid('ff54dc09-e869-424d-8f4f-14eba1d20de2')
-              setPrice(100)
+              setPrice(144)
               break;
             case '2':
               setCheckoutid('48014274-ff21-4d1b-91f5-0fa76d4725c1')
-              setPrice(70)
+              setPrice(96)
               break;
             default:
               setCheckoutid('4b3e1811-41c6-46ee-8acc-8a15e870d237')
-              setPrice(40)
+              setPrice(48)
               break;
           }
         } else {
@@ -240,7 +257,7 @@ function DomainExplorer() {
 
       const theString = domain+'.btc'
 
-      const contract = new web3.eth.Contract(ABI, '0x1C60b08ad39b693EF1f6b3BdBfFA6f5B9b34dd47');
+      const contract = new web3.eth.Contract(ABI, '0x6Bc8DC9F4AfD005F1E08Fe7AEd2EC3dB6E9ee011');
       // const toBytes32 = await contract.methods.stringToBytes32(theString).call()
       // console.log(toBytes32)
       const available = await contract.methods.isUsed(theString.toLowerCase()).call()
@@ -250,15 +267,19 @@ function DomainExplorer() {
 
       const createDate = await contract.methods.creationDate(theString.toLowerCase()).call()
       const txHashCreation = await contract.methods.txHashCreation(theString.toLowerCase()).call()
-      const resolverr = await contract.methods.resolver(theString.toLowerCase()).call()
+      const resolverrCreator = await contract.methods.resolver(theString.toLowerCase()).call()
 
       const date1 = new Date(parseFloat(expiryDate))
       const date2 = new Date(parseFloat(createDate))
 
       setExpiry(date1.toString())
       setCreation(date2.toString())
+
+      const resolverReal = await axios.get(`https://api.ordinaldomains.io/owner/${txHashCreation}`)
+
       setTxhash(txHashCreation)
-      setResolver(resolverr)
+      setResolver(resolverReal.data)
+      setCreator(resolverrCreator)
       setAvailable(false)
 
       if(available == true){
@@ -281,31 +302,61 @@ function DomainExplorer() {
   }
 
 
-  const chargeFailure = async() => {
-    toast.error('Something went wrong')
-  }
+  // const chargeFailure = async() => {
+  //   toast.error('Something went wrong')
+  // }
 
-  const chargeSuccess = async() => {
+  // const chargeSuccess = async() => {
     
-    toast.promise(
-      postOrderInfo(),
-       {
-         loading: 'Do not close this page...',
-         success: <b>Order Placed!</b>,
-         error: <b>Something went wrong with your order.</b>,
-       }
-     );
+  //   toast.promise(
+  //     buyNow(),
+  //      {
+  //        loading: 'Do not close this page...',
+  //        success: <b>Order Placed!</b>,
+  //        error: <b>Something went wrong with your order.</b>,
+  //      }
+  //    );
 
 
-  }
+  // }
 
-  const postOrderInfo = async() => {
-    await axios.post('https://fierce-plains-92629.herokuapp.com/recordInfo', {
-      "address":ordinalsaddr,
-      "years":year,
-      "name":localinp+'.btc'
-    })
-    setOrderplaced(true)
+  // const postOrderInfo = async() => {
+  //   await axios.post('https://fierce-plains-92629.herokuapp.com/recordInfo', {
+  //     "address":ordinalsaddr,
+  //     "years":year,
+  //     "name":localinp+'.btc'
+  //   })
+  //   setOrderplaced(true)
+  // }
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+
+
+  const buyNow = async() => {
+    try{
+      setIsdisabled(true)
+      const request = await axios.post('https://api.ordinaldomains.io/charge', {
+        "address": ordinalsaddr,
+        "years": year,
+        "name":localinp+'.btc',
+        "price":price
+      })
+        const theLink = request.data.hosted_url;
+        setThelink(theLink)
+        await delay(1000)
+        window.open(theLink, "_blank")
+      
+
+
+    }catch(err){
+      console.log('err is ', err)
+      setIsdisabled(false)
+      if(err == 'Error: Request failed with status code 400'){
+        toast.error('Domain is already booked. Try again later or change domain.')
+      }
+      // toast.error('an error has occured')
+
+    }
   }
 
   function hasWhiteSpace(s) {
@@ -327,8 +378,12 @@ function DomainExplorer() {
                 Is  Here 
             </h1>
             <div className="inputcontainer" style={{width:'100%', maxWidth:'558px', margin:'0 auto' ,display:'block'}}>
-            <input value={inp} onChange={(event) => setInp(event.target.value)}  style={{width:'100%', display:'inline', maxWidth:'350px', padding:'10px', lineHeight:'2.125rem', fontSize:'1.625rem', border:'0px', background:'transparent'}} type="text" class="form-control" placeholder="Type the domain you want" aria-label="Recipient's username" aria-describedby="basic-addon2" />
-            <button onClick={searchName} class="btn btn-primary" type="button" style={{float:'right', marginRight:'5px', marginTop:'2px', fontSize:'1.5rem'}}>Search</button>
+            <input value={inp}     onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  searchName()
+                }
+              }} onChange={(event) => setInp(event.target.value)}  style={{width:'100%', display:'inline', maxWidth:'350px', padding:'10px', lineHeight:'2.125rem', paddingLeft:'20px', fontSize:'1rem', height:'52.99px', fontWeight:"bold", border:'0px', background:'transparent'}} type="text" class="form-control" placeholder="Type the domain you want" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+            <button onClick={searchName} class="btn btn-primary" type="button" style={{float:'right', fontSize:'1rem', width:'100%', maxWidth:'120px', height:'53px'}}>Search</button>
 
             </div>
           </div>
@@ -364,7 +419,7 @@ function DomainExplorer() {
                                         <h4 style={{color:'black', fontWeight:'bold'}}>{localinp}.btc</h4> 
                                     </div>
                                     <div className="col-6" style={{textAlign:'right'}}>
-                                        <h4 style={{color: available == true ? 'green' : 'red', fontWeight:'bold'}}>{available == true ? 'Available' : 'Not Available'}</h4> 
+                                        <h4 style={{color: available == true ? 'green' : 'red', fontWeight:'bold'}}>{available == true ? 'Available' : available == false ? 'Not Available' : ''}</h4> 
                                     </div>
                                 </div>
                         </div>
@@ -392,11 +447,11 @@ function DomainExplorer() {
                                     </div>
                                     <div className="col-6" style={{textAlign:'right'}}>
                                         <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" onChange={(event) => setYear(event.target.value)}>
-                                            <option selected value="1">1 year</option>
+                                            <option value="1">1 year</option>
                                             <option value="2">2 years</option>
                                             <option value="3">3 years</option>
                                             <option value="4">4 years</option>
-                                            <option value="5">5 years</option>
+                                            <option selected value="5">5 years</option>
                                         </select>
                                     </div>
                         </div>
@@ -415,7 +470,27 @@ function DomainExplorer() {
                         </div>
                     </div>
                     <div className="col-12" style={{textAlign:'center'}}>
-                    <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onPaymentDetected={chargeSuccess} onChargeFailure={chargeFailure} checkoutId={checkoutid} />
+                    {/* <CoinbaseCommerceButton disabled={!validaddr} className="btn btn-primary" onPaymentDetected={chargeSuccess} onChargeFailure={chargeFailure} checkoutId={checkoutid} /> */}
+                    <button className="btn btn-primary" disabled={!validaddr || isdisabled} onClick={buyNow}>Buy Now </button>
+                    </div>
+                    {thelink !== '' ? 
+                                        <div className="col-12">
+                                        <div className="alert alert-primary" style={{marginTop:'1rem'}}>
+                                          Complete the payment on <a href={thelink} target="_blank" rel="noreferrer">
+                                            Coinbase
+                                          </a>. Your domain will be delivered within few minutes from payment confirmation. 
+                                          NOTICE: payment confirmation can take up to an hour depending on the chain you are using.
+                                        </div>
+                                      </div>
+                    : null}
+                    <div className="col-12">
+                        <br />
+                    </div>
+                    <div className="col-6" style={{textAlign:'center'}}>
+                    <img src="/coinbase.svg" alt="coinbased" style={{marginTop:'30px', width:'100%', maxWidth:'234px'}} />
+                    </div>
+                    <div className="col-6" style={{textAlign:'center'}}>
+                    <img src="/tokens.svg" alt="coinbased" style={{width:'100%', maxWidth:'234px'}} />
                     </div>
                     <div className="col-12">
                         <br />
@@ -427,6 +502,12 @@ function DomainExplorer() {
                                     </div>
                                     <div className="col-6" style={{textAlign:'right'}}>
                                         <p>{resolver}</p>
+                                    </div>
+                                    <div className="col-6">
+                                        <h5 style={{color:'#252525'}}>Original Creator</h5> 
+                                    </div>
+                                    <div className="col-6" style={{textAlign:'right'}}>
+                                        <p>{creator}</p>
                                     </div>
                                     <div className="col-6">
                                         <h5 style={{color:'#252525'}}>Create Date:</h5> 
@@ -484,10 +565,11 @@ function DomainExplorer() {
                 <br /> 
               </div>
               <div className="col-12">
-                <p style={{width:'100%', maxWidth:'690px', margin:'0 auto', display:'block'}}>Maecenas a ultrices risus. Etiam accumsan ligula feugiat facilisis dictum. Sed viverra vitae mi vel malesuada. Sed sem lectus, efficitur id nunc et, dictum lacinia nibh.</p>
+                <p style={{width:'100%', maxWidth:'690px', margin:'0 auto', display:'block', textAlign:'center'}}>
+                On the Bitcoin Blockchain: Secure Your Unique Domain with OrdinalDomains.
+                </p>
               </div>
               <div className="col-12" style={{textAlign:'center'}}>
-                <hr />
                 <a href="/home" style={{textDecoration:'none', color:'white', marginRight:'5px'}}>Home</a>                <a style={{textDecoration:'none', color:'white', marginRight:'5px'}} href="/home">About Us</a>                <a style={{textDecoration:'none', color:'white'}} href="/home">FAQs</a>
 
               </div>
@@ -496,7 +578,10 @@ function DomainExplorer() {
               </div>
               <div className="col-12">
                 <div style={{width:'100%', margin:'0 auto', display:'block', textAlign:'center'}}>
-                  <img src="/tg.svg" alt="telegram" width="42px" />
+                  <img src="/tg.svg" alt="telegram" width="42px" style={{marginRight:'5px'}} />
+                  <a href="https://discord.gg/ujGJsgD5rW" target="_blank" rel="noreferrer">
+                  <img src="/ds.svg" alt="telegram" width="42px" style={{marginRight:'5px'}} />
+                  </a>
                   <img src="/tw.svg" alt="telegram" width="42px" />
                 </div>
               </div>
@@ -509,9 +594,11 @@ function DomainExplorer() {
                 </p>
               </div>
               <div className="col-6 col-md-6">
+                <a href="/#/terms-and-conditions" style={{textDecoration:'none', color:'white'}}>
                 <p style={{textAlign:'right'}}>
                 Terms and Conditions
                 </p>
+                </a>
               </div>
             </div>
           </div>

@@ -29,7 +29,11 @@ import {
 } from "./connectors";
 import Homepage from './pages/Homepage';
 import DomainExplorer from './pages/DomainExplorer'
+import Profile from './pages/Profile'
+import Terms from './pages/Terms'
 import ConnectModal from './components/ConnectModal'
+import SendModal from './components/SendModal'
+import ProfileModal from './components/ProfileModal'
 // import Token from './Token';
 
 
@@ -65,7 +69,7 @@ const GlobalStyles = createGlobalStyle`
   body {
     // font-family: 'OpenSans';
     height: 100%;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Quicksand', sans-serif;
   }
 `
 
@@ -77,11 +81,20 @@ function App() {
     <GlobalStyles />
 <Web3ReactProvider getLibrary={getLibrary}>
 <ConnectModal />
+<ProfileModal />
+<SendModal />
 
           <Switch>  
 
           <Route path="/domain/:thedomain">
             <DomainExplorer />
+          </Route>
+          <Route path="/terms-and-conditions">
+            <Terms />
+          </Route>
+
+          <Route path="/profile">
+            <Profile />
           </Route>
 
           <Route path="/">

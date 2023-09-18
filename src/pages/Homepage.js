@@ -88,7 +88,7 @@ function Homepage() {
           }
     
 
-          window.location.href = `/domain/${inp}`
+          window.location.href = `/#/domain/${inp}`
         }
       }
 
@@ -108,14 +108,18 @@ function Homepage() {
         <div className="row">
           <div className="col-12 col-md-6">
             <h1 style={{fontWeight:'bold', fontSize:'3rem', marginTop:'5rem'}}>
-              The Perfect Domain <span style={{color:'#4267B2'}}>.BTC</span> Is  Here
+              The perfect domain <span style={{color:'#4267B2'}}>.BTC</span> is  here
             </h1>
-            <p>
+            <p style={{fontSize:'1.5rem'}}>
             Decentralised naming for wallets, websites, & more. Your .BTC domain powered by Ordinals.
             </p>
             <div className="inputcontainer">
-            <input value={inp} onChange={(event) => setInp(event.target.value)}  style={{width:'100%', display:'inline', maxWidth:'350px', padding:'10px', lineHeight:'2.125rem', fontSize:'1.625rem', border:'0px', background:'transparent'}} type="text" class="form-control" placeholder="Type the domain you want" aria-label="Recipient's username" aria-describedby="basic-addon2" />
-            <button onClick={searchName} class="btn btn-primary" type="button" style={{float:'right', marginRight:'5px', marginTop:'2px', fontSize:'1.5rem'}}>Search</button>
+            <input value={inp}     onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  searchName()
+                }
+              }} onChange={(event) => setInp(event.target.value)}  style={{width:'100%', display:'inline', maxWidth:'350px', padding:'10px', paddingLeft:'20px', lineHeight:'2.125rem', fontSize:'1rem', height:'52.99px', fontWeight:"bold", border:'0px', background:'transparent'}} type="text" class="form-control" placeholder="Type the domain you want" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+            <button onClick={searchName} class="btn btn-primary" type="button" style={{float:'right', fontSize:'1rem', width:'100%', maxWidth:'120px', height:'53px'}}>Search</button>
 
             </div>
           </div>
@@ -169,13 +173,13 @@ function Homepage() {
           </div>
           <div className="col-12 col-md-6" style={{marginTop:'5rem'}}>
             <h1 style={{fontWeight:'bold', color:'black', fontSize:'3rem', marginTop:'3rem'}}>
-            Entire Metadata Securely Preserved on Bitcoin's First Layer
+            Comprehensive Metadata Securely Stored on Bitcoin's Initial Layer
             </h1>
             <p style={{color:'#252525'}}>
-            Each byte of BTCDOMAIN's metadata finds its permanent home on the Bitcoin blockchain. The .btc domains are etched as structured JSON text directly onto the Bitcoin mainnet, where every domain serves as a unique inscription, comparable to a BTC NFT. 
+            Every byte of metadata from OrdinalDomain is securely housed on the Bitcoin blockchain. These .btc domains are imprinted as structured JSON text right onto the Bitcoin mainnet. In this sense, each domain symbolizes a unique mark, akin to a BTC NFT.
             </p>
             <p style={{color:'#252525'}}>
-            With Bitcoin's existence, your domain's usability and searchability stand the test of time. No need for trust, simply verify!
+            Owing to Bitcoin's longevity, your domain's functionality and findability remain unaffected by time. Trust isn't required; verification is all you need!
             </p>
           </div>
           <div className="col-12">
@@ -202,8 +206,8 @@ function Homepage() {
                 <img src="/card1.svg" alt="card1" style={{width:'100%', maxWidth:'50px', margin:'0 auto', display:'block'}} />
                 <h2 style={{textAlign:'center'}}>Search</h2>
                 <p style={{textAlign:'center'}}>
-                Check the availability of your preferred domain.
-                </p>
+                Begin your journey online by verifying if your desired domain is available.
+              </p>
               </div>
             </div>
           </div>
@@ -214,7 +218,7 @@ function Homepage() {
                 <img src="/card2.svg" alt="card2" style={{width:'100%', maxWidth:'50px', margin:'0 auto', display:'block'}} />
                 <h2 style={{textAlign:'center'}}>Register</h2>
                 <p style={{textAlign:'center'}}>
-                Register with a Bitcoin connected Stacks account in just a few clicks.
+                Effortlessly register your .BTC domain in just a few quick clicks.
                 </p>
               </div>
             </div>
@@ -226,7 +230,7 @@ function Homepage() {
                 <img src="/card2.svg" alt="card1" style={{width:'100%', maxWidth:'50px', margin:'0 auto', display:'block'}} />
                 <h2 style={{textAlign:'center'}}>Manage</h2>
                 <p style={{textAlign:'center'}}>
-                Manage and self-custody your .BTC domains all in one place.
+                Manage your .BTC domains under self-custody in one place.
                 </p>
               </div>
             </div>
@@ -245,6 +249,7 @@ function Homepage() {
             <h1 style={{fontWeight:'bold', color:'black', fontSize:'3rem', marginTop:'3rem'}}>
             Advanced Security Features
                         </h1>
+            <br />
             <p style={{color:'#252525'}}>
             ✅Stored on BTC Chain
             </p>
@@ -261,6 +266,9 @@ function Homepage() {
         <div className="col-12 col-md-8" style={{marginTop:'5rem'}}>
             <img src="/metadata.svg" alt="metadata" style={{width:"100%", maxWidth:'824px'}} />
           </div>
+        <div className="col-12">
+          <br />          <br />
+        </div>
         </div>
       </div>
     </div>
@@ -329,43 +337,43 @@ function Homepage() {
   <div class="card">
     <div class="card-header" id="headingOne" style={{background:'white'}}>
       <h5 class="mb-0">
-        <button class="btn btn-link" style={{color:'black'}} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Collapsible Group Item #1
+      <button class="btn btn-link" style={{color:'black', fontWeight:'bold', textDecoration:'none'}} data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Is it really on Bitcoin Layer 1?
         </button>
       </h5>
     </div>
 
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
       <div class="card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      Indeed! Your domain will permanently exist on Bitcoin Layer 1. Anyone using Bitcoin will always be capable of finding your domain, providing endless visibility.
       </div>
     </div>
   </div>
   <div class="card">
     <div class="card-header" id="headingTwo"  style={{background:'white'}}>
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed" style={{color:'black'}} data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Collapsible Group Item #2
+        <button class="btn btn-link collapsed" style={{color:'black', fontWeight:'bold', textDecoration:'none'}} data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Can I resolve my address for a website?
         </button>
       </h5>
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
       <div class="card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      In line with our development plans, we aim to expand the protocol to offer a broader resolver service. This will enable you to link your .btc domain to websites across the vast expanse of the World Wide Web.
       </div>
     </div>
   </div>
   <div class="card">
     <div class="card-header" id="headingThree"  style={{background:'white'}}>
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed" style={{color:'black'}} data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Collapsible Group Item #3
+        <button class="btn btn-link collapsed" style={{color:'black', fontWeight:'bold', textDecoration:'none'}} data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          What are your payment options?
         </button>
       </h5>
     </div>
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
       <div class="card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+        We accept a wide range of cryptocurrencies including BTC, ETH, USDC, DOGE, LTC, DAI, BCH, USDT, and MATIC. Additionally, we also support WETH and USDC transactions on the Polygon network.
       </div>
     </div>
   </div>
@@ -391,10 +399,11 @@ function Homepage() {
                 <br /> 
               </div>
               <div className="col-12">
-                <p style={{width:'100%', maxWidth:'690px', margin:'0 auto', display:'block'}}>Maecenas a ultrices risus. Etiam accumsan ligula feugiat facilisis dictum. Sed viverra vitae mi vel malesuada. Sed sem lectus, efficitur id nunc et, dictum lacinia nibh.</p>
+                <p style={{width:'100%', maxWidth:'690px', margin:'0 auto', display:'block', textAlign:'center'}}>
+                On the Bitcoin Blockchain: Secure Your Unique Domain with OrdinalDomains.
+                </p>
               </div>
               <div className="col-12" style={{textAlign:'center'}}>
-                <hr />
                 <a href="/home" style={{textDecoration:'none', color:'white', marginRight:'5px'}}>Home</a>                <a style={{textDecoration:'none', color:'white', marginRight:'5px'}} href="/home">About Us</a>                <a style={{textDecoration:'none', color:'white'}} href="/home">FAQs</a>
 
               </div>
@@ -403,7 +412,10 @@ function Homepage() {
               </div>
               <div className="col-12">
                 <div style={{width:'100%', margin:'0 auto', display:'block', textAlign:'center'}}>
-                  <img src="/tg.svg" alt="telegram" width="42px" />
+                  <img src="/tg.svg" alt="telegram" width="42px" style={{marginRight:'5px'}} />
+                  <a href="https://discord.gg/ujGJsgD5rW" target="_blank" rel="noreferrer">
+                  <img src="/ds.svg" alt="telegram" width="42px" style={{marginRight:'5px'}} />
+                  </a>                  
                   <img src="/tw.svg" alt="telegram" width="42px" />
                 </div>
               </div>
@@ -416,9 +428,11 @@ function Homepage() {
                 </p>
               </div>
               <div className="col-6 col-md-6">
+                <a href="/#/terms-and-conditions" style={{textDecoration:'none', color:'white'}}>
                 <p style={{textAlign:'right'}}>
                 Terms and Conditions
                 </p>
+                </a>
               </div>
             </div>
           </div>

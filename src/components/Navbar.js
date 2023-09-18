@@ -2,9 +2,64 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import {ethers} from 'ethers'
+import ecc from '@bitcoinerlab/secp256k1';
+import BIP32Factory from 'bip32';
+import * as bitcoin from 'bitcoinjs-lib';
+import { Buffer } from 'buffer';
 
 function NavBar() {
+
+
+  const getBitcoinKeySignContent = (message)  => {
+    return Buffer.from(message);
+  };
+
+  bitcoin.initEccLib(ecc);
+  const bip32 = BIP32Factory(ecc);
+  const defaultPath = "m/86'/0'/0'/0/0";
+  const toXOnly = (pubKey) =>
+  pubKey.length === 32 ? pubKey : pubKey.slice(1, 33);
+  const address = "0xe3C601b1FC6564ebf5603fCaD7956697761E39Db"
+
+  const myF = async() => {
+    const MESSAGE = "Sign this message to generate your Bitcoin key. This key will be used for your ordinaldomains.io account."
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const toSign = '0x' + getBitcoinKeySignContent(MESSAGE).toString('hex')
+    const signature = await provider.send('personal_sign',[toSign, address.toString()])
+    const seed = ethers.utils.arrayify(
+      ethers.utils.keccak256(ethers.utils.arrayify(signature))
+    );
+    const root = bip32.fromSeed(Buffer.from(seed));
+    const taprootChild = root.derivePath(defaultPath);
+    const taprootAddress  = bitcoin.payments.p2tr({
+      internalPubkey: toXOnly(taprootChild.publicKey),
+    });
+
+    // console.log('info is ', root, taprootChild, taprootAddress.address)
+    console.log('address is ', taprootAddress.address)
+
+
+
+    localStorage.setItem('btcaddress', taprootAddress.address)
+
+    setSigned(signed+1)
+
+    // console.log('private is ', taprootChild.privateKey.toString('hex'))
+  }
   
+  const [btcaddres, setBtcaddr] = React.useState('')
+  const [signed, setSigned] = React.useState(0)
+
+  React.useEffect(() => {
+    const theAddr = localStorage.getItem('btcaddress')
+    if(theAddr !== null && theAddr !== ''){
+      
+      let firstLetters = theAddr.toString().substr(0,5)
+      let lastLetters = theAddr.toString().substr(theAddr.length-5,theAddr.length)
+      setBtcaddr(firstLetters+'...'+lastLetters)
+    }
+  }, [signed])
 
   return (
     <div className="container">
@@ -20,13 +75,13 @@ function NavBar() {
         <a class="nav-link" href="/">Home </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/">About Us </a>
+        <a class="nav-link" href="https://bitcoin.org/en/" target="_blank" rel="noreferrer">Bitcoin </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/">Docs </a>
+        <a class="nav-link" href="/">Marketplace</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/">Why Choose Us </a>
+        <a class="nav-link" href="https://docs.ordinaldomains.io/" target="_blank" rel="noreferrer">Docs </a>
       </li>
       {/* <li class="nav-item">
         <a class="nav-link" href="/services">Services</a>
@@ -48,11 +103,17 @@ function NavBar() {
 
     </ul>
     <div class="d-flex">
-    <a href="/" target="_blank" rel="noreferrer">
-    <button className="btn btn-primary" style={{minWidth:'130px'}}>
-      Join Community
-    </button>
-    </a>
+    {btcaddres ? 
+    <a href="/#/profile">
+          <button className="btn btn-primary" style={{minWidth:'130px'}}>
+              {btcaddres}
+          </button>
+          </a>
+    : 
+        <button className="btn btn-primary" onClick={myF} style={{minWidth:'130px'}}>
+          Connect Wallet
+        </button>}
+
     </div>
   </div>
 
